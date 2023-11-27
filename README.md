@@ -135,3 +135,117 @@ int main() {
 
 ---
 
+## Pure Virtual Functions and Abstract Base Classes
+
+**Pure Virtual Functions**: Functions with no body, declared by assigning `= 0` in their declaration.
+**Abstract Base Class**: A class containing one or more pure virtual functions. It cannot be instantiated (illegal: Base base {};).
+
+```
+class Base {
+public:
+    virtual int getValue() const = 0; // Pure virtual function
+};
+```
+
+**Consequences**:
+  - Derived classes must implement all pure virtual functions or they also become an abstract base class.
+  - Prevents instantiation of classes that are incomplete (i.e., lacking implementation of essential functions).
+
+**Advantages**
+- Ensures that derived classes provide specific functionality that the base class was expecting them to.
+- Allows for polymorphic behavior with a common interface.
+
+```
+class Animal {
+public:
+    Animal() { std::cout << "Animal created" << std::endl; }
+    virtual ~Animal() { std::cout << "Animal destroyed" << std::endl; }
+
+    virtual std::string_view speak() const = 0; 
+};
+
+class Cat : public Animal {
+public:
+    Cat() { std::cout << "Cat created" << std::endl; }
+    ~Cat() override { std::cout << "Cat destroyed" << std::endl; }
+
+    std::string_view speak() const override { return "Meow"; }
+};
+```
+
+**PVF with Definitions**
+- Pure virtual functions can have definitions, but the class remains abstract.
+- Useful for providing default implementations while still requiring overrides.
+
+```
+class Animal {
+public:
+    virtual std::string_view speak() const = 0;
+};
+
+std::string_view Animal::speak() const {
+    return "Default Sound";
+}
+```
+
+---
+
+## Interface Classes
+- Classes with only pure virtual functions (no data members).
+- Used to define a set of functions that derived classes must implement.
+
+```
+class IErrorLog { // Starts with 'I'!
+public:
+    virtual bool openLog(std::string_view filename) = 0;
+    virtual bool closeLog() = 0;
+    virtual bool writeError(std::string_view errorMessage) = 0;
+    virtual ~IErrorLog() {} // Virtual destructor
+};
+```
+
+---
+
+## Multiple Inheritance
+
+- Allows a derived class to inherit from more than one base class.
+- Enables the creation of a derived class that combines features or behaviors from multiple parent classes.
+
+```
+class Person {
+    // Person class members
+};
+
+class Employee {
+    // Employee class members
+};
+
+class Teacher : public Person, public Employee {
+    // Teacher inherits from both Person and Employee
+};
+```
+
+**Mixins**
+- A small class that adds properties or functionalities to a class through inheritance.
+- Intended for adding specific features without direct instantiation.
+
+```
+class Box { /* ... */ };
+class Label { /* ... */ };
+
+class Button : public Box, public Label {};
+```
+
+**Problems with Multiple Inheritance**
+1. **Ambiguity**: Arises when multiple base classes have a function with the same name.
+    - **Example**: If both `USBDevice` and `NetworkDevice` have a `getID()` method, `WirelessAdapter` inheriting from both can lead to ambiguity.
+    - **Solution**: Explicitly specify the class to use the method from, e.g., `c54G.USBDevice::getID()`.
+
+2. **Diamond Problem**:
+    - Occurs in a diamond-shaped inheritance pattern, where a class inherits from two classes that both inherit from the same base class.
+    - **Example**: A `Copier` class inheriting from both `Scanner` and `Printer`, which both inherit from `PoweredDevice`.
+    - **Issues**: Whether `Copier` should have one or two copies of `PoweredDevice`, and resolving ambiguous references.
+    - Addressed in C++ using virtual base classes.
+
+---
+
