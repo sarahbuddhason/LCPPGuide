@@ -1,10 +1,10 @@
 ## Pointers and References to the Base Class of Derived Objects
 
-**Concept**:
+**Concept**
   - In C++, pointers and references to a base class can be used to refer to objects of derived classes.
   - Fundamental in implementing polymorphism, allowing base class interfaces to interact with derived class objects.
 
-**Behavior**:
+**Behavior**
   - When using base class pointers/references with derived objects, only members of the base class are directly accessible.
   - Without virtual functions, calling a method on a base class reference/pointer executes the base class version, not the derived class version.
 
@@ -25,7 +25,7 @@ Base& baseRef = derivedObj;
 baseRef.show(); // Outputs "Derived show" due to virtual function
 ```
 
-**Use Cases**:
+**Use Cases**
   - Useful in scenarios where functions need to operate on a group of related objects differently, depending on their actual derived types.
   - Enables writing generic code that can work with a family of related classes.
 
@@ -55,18 +55,18 @@ Base& rBase = derived;
 std::cout << rBase.getName(); // Now outputs "Derived"
 ```
 
-**Important Points**:
+**Important Points**
   - Virtual functions allow polymorphic behavior.
   - Avoid calling virtual functions in constructors/destructors.
   - Virtual function resolution only occurs through pointers or references.
   - If a function is virtual, all matching overrides in derived classes are implicitly virtual.
 
-**Polymorphism and Efficiency**:
+**Polymorphism and Efficiency**
   - Virtual functions enable runtime polymorphism.
   - There is a performance cost due to dynamic binding.
   - Compiler has to allocate an extra pointer for each class object that has one or more virtual functions.
 
-**Best Practices**:
+**Best Practices**
   - Use virtual destructors for classes with virtual functions.
   - Be cautious with the return types and signatures of virtual functions and overrides.
 
@@ -147,7 +147,7 @@ public:
 };
 ```
 
-**Consequences**:
+**Consequences**
   - Derived classes must implement all pure virtual functions or they also become an abstract base class.
   - Prevents instantiation of classes that are incomplete (i.e., lacking implementation of essential functions).
 
@@ -237,15 +237,53 @@ class Button : public Box, public Label {};
 ```
 
 **Problems with Multiple Inheritance**
-1. **Ambiguity**: Arises when multiple base classes have a function with the same name.
+1. **Ambiguity**
+    - Arises when multiple base classes have a function with the same name.
     - **Example**: If both `USBDevice` and `NetworkDevice` have a `getID()` method, `WirelessAdapter` inheriting from both can lead to ambiguity.
     - **Solution**: Explicitly specify the class to use the method from, e.g., `c54G.USBDevice::getID()`.
 
-2. **Diamond Problem**:
+3. **Diamond Problem**
     - Occurs in a diamond-shaped inheritance pattern, where a class inherits from two classes that both inherit from the same base class.
     - **Example**: A `Copier` class inheriting from both `Scanner` and `Printer`, which both inherit from `PoweredDevice`.
     - **Issues**: Whether `Copier` should have one or two copies of `PoweredDevice`, and resolving ambiguous references.
     - Addressed in C++ using virtual base classes.
+
+---
+
+## Virtual Base Classes
+
+- Solution to the diamond problem.
+- Use the `virtual` keyword to prevent duplication of the base class.
+- Ensures a single shared instance of the base class among all derived classes.
+
+```
+class PoweredDevice { /* ... */ };
+
+class Scanner : virtual public PoweredDevice { /* ... */ };
+
+class Printer : virtual public PoweredDevice { /* ... */ };
+
+class Copier : public Scanner, public Printer { /* ... */ };
+```
+
+- Only one instance of `PoweredDevice` is created and shared between `Scanner` and `Printer`.
+- The most derived class is responsible for constructing the virtual base class.
+- Constructors of intermediate classes call the virtual base class constructor, but is ignored.
+
+```
+class Copier : public Scanner, public Printer {
+public:
+    Copier(int scanner, int printer, int power) : PoweredDevice{ power }, // Constructs PoweredDevice
+                                                  Scanner{ scanner, power },
+                                                  Printer{ printer, power } { /* ... */ }
+};
+```
+- In this case, `Copier` directly constructs `PoweredDevice`.
+
+**Important Points**
+1. **Order of Construction**: Virtual base classes are constructed before non-virtual base classes.
+2. **Responsibility of Construction**: The most derived class is responsible for constructing the virtual base class, even in single inheritance scenarios.
+3. **Virtual Table**: Classes inheriting a virtual base class will have a virtual table, increasing the object size by a pointer.
 
 ---
 
