@@ -310,15 +310,14 @@ public:
 **Early Binding**
 - Process that resolves direct function calls (i.e., statement that directly calls a function).
 - Also called static binding, the compiler or linker directly associates a function call with a function's memory address.
-- In a program with direct function calls (like add(), subtract(), and multiply()), the compiler uses early binding. Each function call is replaced with a machine instruction that directs the CPU to the function's address.
+- In a program with direct function calls (like add()), the compiler uses early binding.
 - Slightly more efficient as the CPU can jump difrectly to the function address.
 
 **Late Binding**
 - Also called dynamic binding, this process is used when the function call cannot be resolved until runtime.
 - In C++, late binding often involves function pointers,
-- Used in cases where the actual function being called is not known by the compiler at the point where the function call is actually being made.
-- Slightly less efficient due to the extra indirection step, but it offers more flexibility as the decision on which function to call is made at runtime.
 - CPU has to read the address held in the pointer and then jump to that address.
+- Slightly less efficient due to the extra indirection step, but more flexible as the decision on which function to call is made at runtime.
 
 **Function Pointers**
 - Also called indirect function call.
