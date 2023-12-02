@@ -287,3 +287,48 @@ public:
 
 ---
 
+## Virtual Destructors
+
+- Essential in base classes to ensure proper cleanup of derived class resources.
+- A non-virtual destructor can lead to resource leaks when deleting derived objects through base pointers.
+
+**Assignment Operators**
+- `MyClass& operator=(const MyClass& other)`
+- Generally, they should not be made virtual to avoid complexity.
+
+**Guidelines**
+1. A base class destructor should be either public and virtual, or protected and non-virtual.
+2. For classes not intended for inheritance, marking them as final can prevent the need for virtual destructors.
+
+---
+
+## Early vs. Late Binding
+
+**Binding**
+- Process that is used to convert identifiers (variable, function names) into machine language addresses.
+
+**Early Binding**
+- Process that resolves direct function calls (i.e., statement that directly calls a function).
+- Also called static binding, the compiler or linker directly associates a function call with a function's memory address.
+- In a program with direct function calls (like add(), subtract(), and multiply()), the compiler uses early binding. Each function call is replaced with a machine instruction that directs the CPU to the function's address.
+- Slightly more efficient as the CPU can jump difrectly to the function address.
+
+**Late Binding**
+- Also called dynamic binding, this process is used when the function call cannot be resolved until runtime.
+- In C++, late binding often involves function pointers,
+- Used in cases where the actual function being called is not known by the compiler at the point where the function call is actually being made.
+- Slightly less efficient due to the extra indirection step, but it offers more flexibility as the decision on which function to call is made at runtime.
+- CPU has to read the address held in the pointer and then jump to that address.
+
+**Function Pointers**
+- Also called indirect function call.
+
+```cpp
+int add(int x, int y) { return x + y; }
+int (*FuncPointer)(int, int) { add };
+int result = FuncPointer(5, 3) // result = 8
+```
+
+---
+
+## Virtual Tables
