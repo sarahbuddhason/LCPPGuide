@@ -331,3 +331,29 @@ int result = FuncPointer(5, 3) // result = 8
 ---
 
 ## Virtual Tables
+
+- Each class with virtual function (or derived) has a vtable, a static array created at compile time.
+- Contains function pointers to the most-derived functions accessible by that class.
+- Classes with virtual functions include hidden pointer (`*__vptr`) to the class' vtable.
+- Pointer is set when class object is created, making each object larger by the size of one pointer.
+- Inherited by derived classes.
+
+```cpp
+class Base {
+public:
+    VirtualTable* __vptr;
+    virtual void function1() {};
+    virtual void function2() {};
+};
+
+class D1: public Base {
+public:
+    void function1() override {};
+};
+
+class D2: public Base{
+public:
+    void function2() override {};
+};
+```
+![image](https://github.com/sarahbuddhason/LCPPGuide/assets/55853717/696d8f4a-c3c8-4b94-9429-4b83acd7dd51)
