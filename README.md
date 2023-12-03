@@ -609,3 +609,25 @@ public:
 
 ---
 
+## Value Categories
+
+**L-Values**
+- Expressions that evaluate to an identifiable object with a distinct memory address.
+- Persists beyond the end of the expression.
+- Can either be modifiable (non-`const`) or non-modifiable (`const`).
+
+**R-Values**
+- Expressions that evaluate to a literals or values returned by functions that are later discarded.
+- Not addressable and only exist within scope of the expression.
+
+**Tip**
+- Try taking its address using operator&, which requires its operand to be an lvalue.
+- If &(expression); compiles, expression must be an lvalue.
+
+```cpp
+int foo() { return 5; }
+int x = 5;
+&x;    // Compiles: x is lvalue.
+&5;    // Does not compile: 5 is rvalue.
+&foo;  // Does not compile: foo() is rvalue.
+```
