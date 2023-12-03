@@ -336,7 +336,7 @@ int result = FuncPointer(5, 3) // result = 8
 - Contains function pointers to the most-derived functions accessible by that class.
 - Classes with virtual functions include hidden pointer (`*__vptr`) to the class' vtable.
 - Pointer is set when class object is created, making each object larger by the size of one pointer.
-- Inherited by derived classes.
+- Allows C++ to dynamically bind function calls to the correct function at runtime.
 
 ```cpp
 class Base {
@@ -357,3 +357,35 @@ public:
 };
 ```
 ![image](https://github.com/sarahbuddhason/LCPPGuide/assets/55853717/696d8f4a-c3c8-4b94-9429-4b83acd7dd51)
+
+- If a derived class overrides a virtual function, its virtual table points to its own implementation rather than the base class'.
+- When a virtual function is called on a base pointer pointing to a derived object, the function call is resolved to the derived class's implementation via the *__vptr and the virtual table.
+- By using vtables, the compiler and program are able to ensure function calls resolve to the appropriate virtual function, even if only using a pointer or reference to a base class.
+- Calling a virtual function is marginally slower than a non-virtual function due to the additional steps of accessing the virtual table and resolving the function to call.
+
+---
+
+## Object Slicing
+
+- When a derived class object is assigned to a base class object, only the base part of the derived object is copied, and the derived part is "sliced off".
+- Leads to a loss of the derived class information.
+
+```cpp
+Derived derived = 5;
+Base base = derived;
+```
+
+## Consequences
+1. Functions taking base class objects by value (instead of reference) can cause slicing.
+   - Avoided by making the function parameter pass by reference instead of pass by value.
+2. Vectors of base class objects can result in slicing when derived objects are added.
+   - `vector<Base&> v;`: Elements cannot be references (must be assignable).
+   - `vector<Base*> v;`: Avoid with a vector of pointers.
+   - `vector<reference_wrapper<Base>> v;`: Avoid with a vector of reassignable references to Base.
+  
+## Best Practices
+- Make sure function paramters are references or pointers to prevent slicing.
+- Avoid pass-by-value for derived classes.
+
+---
+
