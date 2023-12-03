@@ -529,4 +529,12 @@ using FuncType = std::function<bool(int, int)>;
 9. CPU resumes execution at the return address.
 
 **Stack Overflow**
-- 
+- Occurs when all the memory in the stack has been allocated.
+- Result of deep recursion, nested function calls.
+
+**Best Practices**
+- Stack: For small, short-lived data, or when exact data size known at compile time.
+- Heap: Large data or data whose size is determined at runtime.
+
+---
+
