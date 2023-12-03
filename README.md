@@ -538,3 +538,74 @@ using FuncType = std::function<bool(int, int)>;
 
 ---
 
+## Smart Pointers & Move Semantics
+
+**Smart Pointers**
+- Classes designed to manage dynamically allocated memory.
+- Automatically deallocates memory when the smart pointer object goes out of scope, regardless of how the function exits.
+- Wrap classes with a pointer, destructor, and overloaded operators * and ->.
+
+```cpp
+class SmartPointer {
+  T* pointer;
+public:
+  SmartPointer(T* p = nullptr) { p = pointer };
+  ~SmartPointer() { delete (pointer) };
+  T& operator*() const { return *pointer };
+  T* operator->() const { return pointer };
+}
+
+void main() {
+  SmartPointer pointer(new int());
+}
+```
+
+**Flaw in Smart Pointers**
+- Copy constructor and assignment operator perform shallow copies.
+- Leads to dangling pointers, which occurs when pointing to a memory location that has already been freed.
+
+**Move Semantics**
+- Addresses smart pointer flaws.
+- Class will transfer ownership of resources from one object to another, instead of copying them.
+
+```cpp
+class SPMoveSemantics {
+  T* pointer;
+public:
+  SPMoveSemantics(T* p = nullptr) { p = pointer };
+  ~SPMoveSemantics() { delete (pointer) };
+
+  // Copy constructor with move semantics.
+  SPMoveSematics(SPMoveSemantics& o) {
+    pointer = o.pointer;    // Transfer source pointer to local object.
+    o.pointer = nullptr;    // Source should no longer own the pointer.
+  }
+
+  // Assignment operator with move semantics.
+  SPMoveSemantics& operator=(SPMoveSemantics& o) {
+    if (&o == this) return *this;
+    delete pointer;         // Deallocate old pointer.
+    pointer = o.pointer;    // Transfer source pointer to local object.
+    o.pointer = nullptr;    / Source should no longer own the pointer.
+    return *this;
+  }
+
+  // Overload dereference and assignment operators.
+  T& operator*() const { return *pointer };
+  T* operator->() const { return pointer };
+
+  // Disable copy constructor and assignment operator.
+  SPMoveSemantics(const SPMoveSemantics&) = delete;
+  SPMoveSemantics& operator=(const SPMoveSemantics&) = delete;
+}
+```
+
+**`std::auto_ptr`**
+- A standardized smart pointer in C++ which incorrectly nullified source pointers during copies.
+- Deprecated in C++11, removed in C++17.
+
+**Move-Aware Smart Pointers**
+- In C++11, `std::auto_ptr` was replaced by `std::unique_ptr`, `std::weak_ptr`, `std::shared_ptr`.
+
+---
+
