@@ -1,4 +1,4 @@
-## Pointers and References to the Base Class of Derived Objects
+## Pointers & References to Base Class of Derived Objects
 
 **Concept**
   - In C++, pointers and references to a base class can be used to refer to objects of derived classes.
@@ -386,6 +386,38 @@ Base base = derived;
 ## Best Practices
 - Make sure function paramters are references or pointers to prevent slicing.
 - Avoid pass-by-value for derived classes.
+
+---
+
+## Dynamic Casting
+
+**Upcasting**
+- Implicitly converting a Derived ppointer into a Base pointer.
+
+**Downcasting**
+- Most commonly used for converting base-class pointers into derived-class pointers.
+- Uses casting operator: `dynamic_cast`.
+- Ensures type safety by checking at runtime if conversion is valid.
+
+**`dynamic_cast` Failure**
+- When actual object is not the target Derived type, result is a null pointer.
+- For references, result throws a `std::bad_cast` exception.
+- Always check that `dynamic_cast` succeeded by checking for a null pointer.
+
+**Limitations**
+- Has a runtime performance penalty due to type-checking.
+- Does not work with classes with no virtual functions (and thus no vtable).
+- Does not work with protected or private inheritance.
+- Does not work in some calses with virtual base classes.
+
+**`dynamic_cast` vs. `static_cast`**
+- `static_cast` is faster but does not perform runtime checks.
+- `dynamic_cast` is safer for downcasting.
+
+**Best Practices**
+- Use virtual functions over casting.
+- Use `dynamic_cast` when you need to access derived-specific members or when you cannot modify Base class to add virtual functions.
+- Do not turn off run-time type information (RTTI, reveals object data type) when using `dynamic_cast`.
 
 ---
 
