@@ -421,3 +421,112 @@ Base base = derived;
 
 ---
 
+## Function Pointers
+
+- Stores the address of a function.
+- Allows functions to be called indirectly.
+
+**Pointer to Function**
+```cpp
+int (*funcPointer)(int); // Pointer to function with 1 parameter (int), returns an int.
+```
+
+**Assign Function to Function Pointer**
+```cpp
+int (*funcPointer)(int) { &foo }; // funcPointer points to foo.
+funcPointer = &goo;               // funcPointer now points to goo.
+```
+
+**Call Function using Function Pointer**
+```cpp
+int (*funcPointer)(int) { &foo }; // funcPointer points to foo.
+(*funcPointer)(5)                 // Explicit dereference.
+funcPointer(5)                    // Implicit dereference.
+```
+
+- Should ensure that `funcPointer` is not nullptr before calling it.
+- Dereferencing a null function pointer leads to undefined behaviour.
+
+**Callback Functions**
+```cpp
+void selectionSort(int* array, int size, bool comparisonFcn(int, int));
+```
+
+- Pass a function as an argument to another function.
+
+**Default Parameters**
+```cpp
+void selectionSort(int* array, int size, bool comparisonFcn(int, int) = ascending);
+```
+
+- Defaults the sort to `ascending` sort function.
+- `ascending` must be declared prior to this point.
+
+**Type Aliases**
+```cpp
+using ValidateFunction = bool(*)(int, int);
+
+bool validate(int x, int y, bool (*funcPointer)(int, int)); // Before
+bool validate(int x, int y, ValidateFunction funcPointer)   // After
+```
+
+**`std::function`**
+```cpp
+#include <functional>
+bool validate(int x, int y, std::function<bool(int, int)> func);
+bool sort(int* array, std::function<bool()> func);
+using FuncType = std::function<bool(int, int)>;
+```
+
+**Type Reference with `auto`**
+- `auto` can infer the type of a function pointer.
+
+**Best Practices**
+- For repeated use, `std::function` and type aliases are recommended.
+
+---
+
+## Stack and Heap
+
+**Memory Segments**
+- Code Segment: Where compiled program sits in memory.
+- BSS Segment: Where zero-initialized global and static variables are stored.
+- Data Segment: Where initialized global and static variables are stored.
+- Heap: Where dynamically allocated variables are allocated from.
+- Call Stack: Where function-related information are stored.
+
+**Heap**
+- Used for dynamic memory allocation, managed via `new` and `delete` operators.
+- Memory is allocated and freed manually, leading to potential memory leaks.
+- Useful for allocating large data or unknown sized data at compile time.
+- Slower than stack allocation due to dynamic nature.
+
+**Stack**
+- Used for static memory allocation, including function parameters, local variables, etc.
+- Follows LIFO: functions are pushed onto the stack when called and popped off when complete.
+- Faster than heap allocation since size is known at compile time.
+- Limited in size, leading to stack overflow if too much memory is used.
+
+**Stack Frames**
+- Stack is a fixed-size block of memory addresses.
+- The items pushed and popped on the stack are called stack frames.
+- A stack frame keeps track of all the data associated with one function call.
+- The stack pointer keeps track of where the top of the call stack currently is.
+
+**Example of Call Stack**
+1. Program has a function call.
+2. Stack frame constructed. Pushed onto stack. Includes:
+   - Return address which tells CPU where to return after called function exits.
+   - All function arguments.
+   - Memory for any local variables.
+   - Saved copies of any registers modified that need to be restored after function returns.
+3. CPU jumps to the function start point.
+4. Instructions inside function begin execution.
+5. Function terminates.
+6. Registers are restored from the call stack.
+7. Stack frame is popped off the stack, freeing memory for all local variables and arguments.
+8. Return value handled.
+9. CPU resumes execution at the return address.
+
+**Stack Overflow**
+- 
