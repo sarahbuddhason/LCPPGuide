@@ -351,7 +351,7 @@ public:
     void function1() override {};
 };
 
-class D2: public Base{
+class D2: public Base {
 public:
     void function2() override {};
 };
