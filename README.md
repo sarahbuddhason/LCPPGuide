@@ -631,3 +631,19 @@ int x = 5;
 &5;    // Does not compile: 5 is rvalue.
 &foo;  // Does not compile: foo() is rvalue.
 ```
+
+---
+
+## Resizing Vectors
+
+- Resizing vectors is a trade off between the cost of computation, so copying over its elements to a resized vector, and the space used by it.
+- It can be done two main ways: resizing by a constant and resizing by a scalar.
+- For both cases, there are conditions to be met in order to be resized. A vector would be resized if it becomes full, or below or above a certain threshold, such as only being half-filled with elements.
+- For resizing by a constant, when the vector reaches capacity, you would increase its size by a constant, allocate space for the new vector, copy its elements over, and free the space associated with the old vector.
+- The process is very similar for resizing by a scalar.
+- There are, however, significant differences in memory and computational time costs for each approach.
+- Scalar resizing is generally more memory efficient for large vectors, although it may allocate more than needed during each resize.
+- Constant resizing can be memory inefficient if we have few elements and the vector is resized by a large constant.
+- Constant resizing can also be time inefficient if we repeated hit capacity and have to spend time copying.
+- Scalar resizing generally has fewer resizing events, so there is less overhead, but the cost of each resizing is typically higher.
+- In general, scalar resizing is better for large-scale or quickly-growing data, and constant resizing is better for more predictable behaviour and smaller amounts of data.
