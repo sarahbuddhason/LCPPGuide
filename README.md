@@ -137,9 +137,8 @@ int main() {
 
 ## Pure Virtual Functions and Abstract Base Classes
 
-**Pure Virtual Functions**: Functions with no body, declared by assigning `= 0` in their declaration.
-
-**Abstract Base Class**: A class containing one or more pure virtual functions. It cannot be instantiated (illegal: Base base {};).
+- **Pure Virtual Functions**: Functions with no body, declared by assigning `= 0` in their declaration.
+- **Abstract Base Class**: A class containing one or more pure virtual functions. It cannot be instantiated (illegal: Base base {};).
 
 ```
 class Base {
